@@ -1,10 +1,12 @@
 import os
 import random
 import time
+import logging
 from flask import Flask, request, render_template, session, flash, redirect, \
     url_for, jsonify
 from flask.ext.mail import Mail, Message
 from celery import Celery
+from logging import StreamHandler
 
 
 app = Flask(__name__)
@@ -24,6 +26,12 @@ app.config['MAIL_DEFAULT_SENDER'] = 'flask@example.com'
 
 app.config['CELERY_BROKER_URL'] = os.environ.get('REDIS_URL')
 app.config['CELERY_RESULT_BACKEND'] = os.environ.get('REDIS_URL')
+
+
+file_handler = StreamHandler()
+file_handler.setLevel(logging.WARNING)
+app.logger.addHandler(file_handler)
+
 
 
 # Initialize extensions
@@ -87,6 +95,8 @@ def index():
 
 @app.route('/longtask', methods=['POST'])
 def longtask():
+    app.logger.warning("Calling a warning msg")
+    app.logger.debug("Call a debug message")
     task = long_task.apply_async()
     return jsonify({}), 202, {'Location': url_for('taskstatus',
                                                   task_id=task.id)}
