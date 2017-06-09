@@ -23,3 +23,5 @@ Quick Setup
 6. Go to `http://localhost:5000/` and enjoy this application!
 
 For details on how this all works, see my article [Using Celery with Flask](http://blog.miguelgrinberg.com/post/using-celery-with-flask).
+
+Test
