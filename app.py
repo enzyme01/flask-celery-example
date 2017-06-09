@@ -19,6 +19,7 @@ app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = 'flask@example.com'
+app.config['SSL_DISABLE'] = bool(os.environ.get('SSL_DISABLE'))
 
 # Celery configuration
 #app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
@@ -32,6 +33,13 @@ file_handler = StreamHandler()
 file_handler.setLevel(logging.WARNING)
 app.logger.addHandler(file_handler)
 
+if not app.debug and not app.testing and not app.config['SSL_DISABLE']:
+    from flask.ext.sslify import SSLify
+    sslify = SSLify(app)
+
+# handle proxy server headers
+from werkzeug.contrib.fixers import ProxyFix
+app.wsgi_app = ProxyFix(app.wsgi_app)
 
 
 # Initialize extensions
