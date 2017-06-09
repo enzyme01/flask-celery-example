@@ -14,4 +14,5 @@ kombu==3.0.30
 pytz==2014.10
 redis==2.10.3
 gunicorn==18.0
+Flask-SSLify==0.1.4
 
